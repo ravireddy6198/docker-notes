@@ -15,15 +15,15 @@ build image
 push to docker hub
 
 --> build the mysql image
-	docker login -u joindevops ( give password)
-	docker push joindevops/mysql:1.0.0
+	docker login -u ravi6198 ( give password)
+	docker push ravi6198/mysql:1.0.0
 	we have to build same above steps for backend and frontend and push to dockerhub
-	docker tag frontend:1.0.0 joindevops/frontend:1.0.0  ( retag the image if image name not given properly means dockerhub accountname missing)
+	docker tag frontend:1.0.0 ravi6198/frontend:1.0.0  ( retag the image if image name not given properly means dockerhub accountname missing)
 	change the images in docker-compose.yaml file refer below
 docker-compose.yaml
-	image: joindevops/mysql:1.0.0
-	image: joindevops/backend:1.0.0
-	image: joindevops/frontend:1.0.0
+	image: ravi6198/mysql:1.0.0
+	image: ravi6198/backend:1.0.0
+	image: ravi6198/frontend:1.0.0
 	
 	docker compose up -d 
 	access from browser to see the app'n working ( sometimes backend not running increase 10 sec sleep in docker compose.yaml file )
@@ -33,7 +33,7 @@ docker-compose.yaml
 Image layers
 =============
 --> export DOCKER_BUILDKIT=0
-	docker build -t joindevops/backend:1.0.0 .
+	docker build -t ravi6198/backend:1.0.0 .
 	docker working from layers means docker anedhi build time instructions wise layers create chesi save chesukuntundhi endhukantey dockerhub lo memory decrease cheyadaaniniki valla website harddisk full avvakunda vundataaniki, first instruction download images and create container after aa container pyna second instruction and give it as intermediate container/image and after take third instruction running on intermediate container/image and give it as another intermediate container/image ...... and so on final instruction give it as final container/image ( all intermediate container/image got deleted after completions of second instruction, third... etc)
 	
 	so ikkada evaryna same step docker file lo ichinapudu adhi aa steps ni dockerhub lo save chesukodhu already save ayina dhaanney refer chesi migata new instructions ni maatram dockerhub lo save chesukuntundhi( new instructions ki new space allocate chestundhi same instructions ki already save ayina memory ney refer chestundhi) below to test the memory allocation for layers in dockerhub
@@ -47,7 +47,7 @@ RUN chown -R expense:expense /opt/backend
 WORKDIR /opt/backend
 COPY package.json .
 
---> docker bild chesinapudu manam choostey old instructions ni save cheyakunda cache nunchi techukuntundhi new instructions ki maatram memory allot chestundhi and allagey manam docker push chesinapudu choostey only new instructions intermediate images maatramey push avutaayi old instructions yokka intermediate images ni mounted from joindevops/backend ani choopistundhi antey dockerhub lo vunna aa joindevops/backend images nunchi mount chestundhi ee new image ki means refer chestundhi so finally
+--> docker build chesinapudu manam choostey old instructions ni save cheyakunda cache nunchi techukuntundhi new instructions ki maatram memory allot chestundhi and allagey manam docker push chesinapudu choostey only new instructions intermediate images maatramey push avutaayi old instructions yokka intermediate images ni mounted from ravi6198/backend ani choopistundhi antey dockerhub lo vunna aa ravi6198/backend images nunchi mount chestundhi ee new image ki means refer chestundhi so finally
 
 Docker maintains the images as layers, each and every instruction is one layer. so docker em chestundhi docker creates
 1. intermediate container from instruction-1
@@ -56,11 +56,11 @@ Docker maintains the images as layers, each and every instruction is one layer. 
 4. Now docker runs 3rd instruction in IC-2 container. docker saves this as another layer
 5. docker creates intermediate container from this layer as IC-3
 
---> so docker build chesinapudu adhi layers wise create chestoo save chesukuntundhi existed instructions ki memory dockerhub lo aloocate cheyakunda refer chestooo newer instructions ki layers ni creste chestoo aa layers ki memory allocate chestundhi next time new project lo evyna same instructions vuntey aa instructions ki sambandhinchina layers ni dcokerhub nunchi refer chestundhi new instructions ki sambandhinchina layers ki maatram space ni dockerhub lo allocate chestundhi
+--> so docker build chesinapudu adhi layers wise create chestoo save chesukuntundhi existed instructions ki memory dockerhub lo allocate cheyakunda refer chestooo newer instructions ki layers ni create chestoo aa layers ki memory allocate chestundhi next time new project lo evyna same instructions vuntey aa instructions ki sambandhinchina layers ni dcokerhub nunchi refer chestundhi new instructions ki sambandhinchina layers ki maatram space ni dockerhub lo allocate chestundhi
 
 How do you optimise docker layers?
 ==================================
-1. less number of layers faster builds, because number of intermediate containers are lessyou can club multiple instructions into single instruction ( multiple run instructions vunnapudu single layer laaga run chestey build fast ga jarugutundhi alaagey no. of layers taggutaayi)
+1. less number of layers faster builds, because number of intermediate containers are less you can club multiple instructions into single instruction ( multiple run instructions vunnapudu single layer laaga run chestey build fast ga jarugutundhi alaagey no. of layers taggutaayi)
 
 RUN addgroup -S expense && adduser -S expense -G expense && \
     mkdir /opt/backend && \
@@ -133,7 +133,7 @@ pg have 100 rooms, what if water is stopped...
 if owner have say 5pg, 
 
 --> docker host anedhi okate vundhi what if underlying docker server is crashed. containers anni effect avutaaya ledha, mottam anni down ayipotaayi so 
-	andhukosam general ga em kaavali We need to maintain multiple docker hosts. so multiple docker hosts vunnapudu oka server lo edyna problem vostey aa containers annintini immediate ga another servers ki move cheyaali so ikkadentantey ipudu so we should have multiple docker servers, again multple docker servers vunnapudu vaatini manage cheyadaaniki evarokaru kaavali kadha,so when you have multiple docker hosts You need some orchestrator to manage all the docker hosts... so ee archestrator aney component em chestundhantey anni servers ni monitor chestoo edyna servers lo proble vochinapudu immidiate ga aa containers annintini verey servers lo ki shift chestundhanna maata so dheenikosam aa component ni emantarantey docker swarm antaaru,
+	andhukosam general ga em kaavali We need to maintain multiple docker hosts. so multiple docker hosts vunnapudu oka server lo edyna problem vostey aa containers annintini immediate ga another servers ki move cheyaali so ikkadentantey ipudu so we should have multiple docker servers, again multple docker servers vunnapudu vaatini manage cheyadaaniki evarokaru kaavali kadha,so when you have multiple docker hosts You need some orchestrator to manage all the docker hosts... so ee archestrator aney component em chestundhantey anni servers ni monitor chestoo edyna servers lo problem vochinapudu immidiate ga aa containers annintini verey servers lo ki shift chestundhanna maata so dheenikosam aa component ni emantarantey docker swarm antaaru,
 	docker swarm is docker native orchestrator but dheenilo anni advantages levu, so manaku popular archestrator enti antey
 
 	kubernetes is the popular container orchestrator tool.. ( archestrator means just like a manager )
@@ -208,3 +208,6 @@ Note :
 --> kubernetes vs docker swarm ?
 	
 	
+	
+	02543181874
+	1554
